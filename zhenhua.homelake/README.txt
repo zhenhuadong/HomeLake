@@ -43,8 +43,7 @@ mvn eclipse:clean
 mvn eclipse:eclipse
 "File" -> "Import" -> "General" -> "Existing Projects into Workspace" -> "Finish".
 
-
-4. setup build path configure if you see there are some jars in the project instead of maven dependencies
+  
    
    
  
