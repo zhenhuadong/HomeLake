@@ -1,11 +1,55 @@
+
+
+1. 查找(find)相关命令
+
+1.1 找出当前目录下java文件
+find ./ -name *.java
+
+1.2 统计当前目录下java文件的代码量(行数)
+find ./ -name *.java|xargs wc -l
+
+1.3 列出当前目录下所有文件中包含raise的文件及行数
+find ./ |xargs grep -sni raise
+
+
+1.4 批量查找并替换内容
+find ./ -name '要查找的文件名' | xargs perl -pi -e 's|被替换的字符串|替换后的字符串|g'
+
+%% perl command
+perl -pi -e
+在Perl 命令中加上-e 选项，后跟一行代码，那它就会像运行一个普通的Perl 脚本那样运行该代码.
+
+%% example
+find ./ |xargs perl -pi -e 's|old|new|g'
+find ./ -name 'pom.xml' | xargs perl -pi -e 's|http://repo1.maven.org/maven2|http://localhost:8081/nexus/content/groups/public|g'
+find ./ |xargs perl -pi -e 's|6262|6060|g'
+find ./ |xargs perl -pi -e 's|6060|6262|g'
+
+2. grep 相关命令
+2.1 列出当前目录下所有文件中包含dvemon_stopas_all的文件及行数
+grep -rn "dvemon_stopas_all" ./
+
+2.2 批量查找并替换内容
+sed -i "s/要找查找的文本/替换后的文本/g" `grep -rl "要找查找的文本" ./`
+sed -i "s/6262/6060/g" `grep -rl "6262" .`
+
+
+3. sed  相关命令
+
+
+
+4. awk 相关命令
+
+
+
+5. 循环相关的命令
+
+
+
 替换文件中的字符串
 %s/old/new/i
 
-统计当前目录下java文件的代码量(行数)
-find . -name *.java|xargs wc -l
 
-列出当前目录下所有文件中包含raise的文件及行数
-find . |xargs grep -sni raise
 
 查找UserProfileGateway目录的绝对地址
 find . -type d -name "UserProfileGateway" -printf "%p %h\n"
@@ -54,29 +98,6 @@ library, and the POSIX thread library. A system is not functional
 without these libraries.
 Distribution: SUSE Linux Enterprise 11
 
-
-
-批量查找并替换内容
-find . -name '要查找的文件名' | xargs perl -pi -e 's|被替换的字符串|替换后的字符串|g'
-
-%% example
-find . |xargs perl -pi -e 's|old|new|g'
-find . -name 'pom.xml' | xargs perl -pi -e 's|http://repo1.maven.org/maven2|http://localhost:8081/nexus/content/groups/public|g'
-%% perl command
-perl -pi -e
-在Perl 命令中加上-e 选项，后跟一行代码，那它就会像运行一个普通的Perl 脚本那样运行该代码.
-
-find . |xargs perl -pi -e 's|6262|6060|g'
-
-find . |xargs perl -pi -e 's|6060|6262|g'
-
-
-查找文件．rhosts在那个目录下面
-
-find . -name ".rhosts"
-
-SC-1:/ # find . -name ".rhosts"
-./.cluster/home/asuser/.rhosts
 
 
 计算drill中start finish 时间差
