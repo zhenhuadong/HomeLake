@@ -1,4 +1,4 @@
-package com.zhenhua.designpattern;
+package com.zhenhua.designpattern.app;
 
 /**
  * Hello world!
