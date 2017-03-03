@@ -1,0 +1,447 @@
+替换文件中的字符串
+%s/old/new/i
+
+统计当前目录下java文件的代码量(行数)
+find . -name *.java|xargs wc -l
+
+列出当前目录下所有文件中包含raise的文件及行数
+find . |xargs grep -sni raise
+
+查找UserProfileGateway目录的绝对地址
+find . -type d -name "UserProfileGateway" -printf "%p %h\n"
+
+%% example
+SC-1:/ # find . -type d -name "UserProfileGateway" -printf "%p %h\n"
+./mnt/UserProfileGateway ./mnt
+
+copy目录不改权限
+
+查看linux核心版本
+uname -a
+Linux vm1-4 3.0.80-0.5.1.5639.0.PTF-default #1 SMP Tue Jun 25 15:55:13 UTC 2013 () x86_64 x86_64 x86_64 GNU/Linux
+cat /proc/version
+Linux version 3.0.80-0.5.1.5639.0.PTF-default (geeko@buildhost) (gcc version 4.3.4 [gcc-4_3-branch revision 152973] (SUSE Linux) ) #1 SMP Tue Jun 25 15:55:13 UTC 2013 ()
+
+cat /etc/issue
+Welcome to SUSE Linux Enterprise Server 11 SP3  (x86_64) - Kernel \r (\l).
+
+cat /etc/SuSE-release
+SUSE Linux Enterprise Server 11 (x86_64)
+VERSION = 11
+PATCHLEVEL = 3
+
+rpm -V sles-release
+.M......  c /etc/issue
+.M......  c /etc/issue.net
+.M.....T  c /etc/motd
+
+
+SC-2:/etc #  rpm -qi glibc
+Name        : glibc                        Relocations: (not relocatable)
+Version     : 2.11.3                            Vendor: SUSE LINUX Products GmbH, Nuernberg, Germany
+Release     : 17.87.3                       Build Date: Wed Jul 29 19:45:35 2015
+Install Date: Tue Oct 20 19:47:19 2015         Build Host: sheep16
+Group       : System/Libraries              Source RPM: glibc-2.11.3-17.87.3.src.rpm
+Size        : 5544941                          License: BSD 3-Clause; GPL v2 or later; LGPL v2.1 or later
+Signature   : RSA/8, Fri Aug 21 23:54:33 2015, Key ID e3a5c360307e3d54
+Packager    : https://www.suse.com/
+URL         : http://www.gnu.org/software/libc/libc.html
+Summary     : Standard Shared Libraries (from the GNU C Library)
+Description :
+The GNU C Library provides the most important standard libraries used
+by nearly all programs: the standard C library, the standard math
+library, and the POSIX thread library. A system is not functional
+without these libraries.
+Distribution: SUSE Linux Enterprise 11
+
+
+
+批量查找并替换内容
+find . -name '要查找的文件名' | xargs perl -pi -e 's|被替换的字符串|替换后的字符串|g'
+
+%% example
+find . |xargs perl -pi -e 's|old|new|g'
+find . -name 'pom.xml' | xargs perl -pi -e 's|http://repo1.maven.org/maven2|http://localhost:8081/nexus/content/groups/public|g'
+%% perl command
+perl -pi -e
+在Perl 命令中加上-e 选项，后跟一行代码，那它就会像运行一个普通的Perl 脚本那样运行该代码.
+
+find . |xargs perl -pi -e 's|6262|6060|g'
+
+find . |xargs perl -pi -e 's|6060|6262|g'
+
+
+查找文件．rhosts在那个目录下面
+
+find . -name ".rhosts"
+
+SC-1:/ # find . -name ".rhosts"
+./.cluster/home/asuser/.rhosts
+
+
+计算drill中start finish 时间差
+drillbit_queries.json:
+{"queryId":"27df9b8f-131c-1c2e-0194-b73d6409a95c","schema":"mysql.cudb_user_data
+","queryText":"select * from CP7 where mscId='bbbbbbbbbbbbb10000110901606'\n","s
+tart":1478517872696,"finish":1478517872733,"outcome":"COMPLETED","username":"adm
+in","remoteAddress":"10.175.182.194:43814"}
+
+cat drillbit_queries.jso* |awk -F',' '{print $4":"$5}'|awk -F':' '{print $4-$2}' |awk 'BEGIN{total=0;num=0}{total+=$1;num+=1}END{print total / num}'
+
+cat drillbit_queries.jso* |awk -F',' '{print $4":"$5}'|awk -F':' '{print $4-$2}'| awk '{if($1>100) print $1}' |wc -l
+cat drillbit_queries.jso* |awk -F',' '{print $4":"$5}'|awk -F':' '{print $4-$2}' |wc -l
+
+
+
+查看磁盘使用情况：
+http://blog.csdn.net/xiaoxinyu316/article/details/43269881
+
+du -h --max-depth=1
+
+打印进程ID
+ps -ef | grep cudb | awk '{print "kill -9 " $2}'
+
+命令行循环执行
+
+for ((a=1;a<=10;a++)) ; do echo $(du -sh /tmp); done
+while true; do /bin/sh stop.sh ; startup.sh; sleep 100 ; done &
+
+MySQL commands:
+
+# about datbases
+show databases;
+use 
+
+# show table schema
+DESCRIBE [db_name.]table_name;
+SHOW CREATE TABLE [db_name.]table_name;
+SHOW COLUMNS FROM [db_name.]table_name;
+DESCRIBE CUDB_DN;
+SHOW CREATE TABLE CUDB_DN;
+SHOW COLUMNS FROM CUDB_DN;
+
+
+root/EvaiKiO1
+root/root000
+
+远程访问
+10.175.170.87
+mstsc 
+用户名密码： upg/root000
+service:jmx:rmi://10.175.182.90:6994/jndi/rmi://10.175.182.90:6099/connector 
+admin/admin
+
+service:jmx:rmi://10.175.182.86:6994/jndi/rmi://10.175.182.86:6099/connector 
+
+
+发消息给其它人
+echo "hello world" | wall
+
+
+echo "installing COM / COM SA / JAVA OAM, pls not touch cluster4-1 " | wall
+
+
+mvn archetype:generate -DgroupId=YOUR-GROUP-ID -DartifactId=YOUR-ARTIFACT-ID -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+
+
+grep JavaCaf /tmp/imm8.xml
+
+
+immcfg -f SmsServerPmMOM_immR2_classes.xml
+immcfg -f SmsServerPmMOMSmsServerPmInstances_immR2_objects.xml
+
+
+mvn archetype:generate -DgroupId="com.ericsson.testupg" -DartifactId="TestJavaOaM" -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+
+
+
+java -jar -Djava.library.path=. testupgpm18.jar
+
+java -jar -Djava.library.path=/cluster/storage/system/software/mmas/appserver/applications/javaoamjboss-R3A18/generic/mmas/lib/ TestJavaOaM-1.0-SNAPSHOT.jar
+java -jar -Djava.library.path=/cluster/storage/system/software/mmas/appserver/applications/javaoamjboss-R3A18/generic/mmas/lib/ testupgpm15.jar
+
+
+
+SC-1:/mnt/UserProfileGateway/config # cat Revisions.txt
+
+
+
+
+tar 解压缩命令
+
+
+tar
+ 
+-c: 建立压缩档案
+-x：解压
+-t：查看内容
+-r：向压缩归档文件末尾追加文件
+-u：更新原压缩包中的文件
+ 
+这五个是独立的命令，压缩解压都要用到其中一个，可以和别的命令连用但只能用其中一个。下面的参数是根据需要在压缩或解压档案时可选的。
+ 
+-z：有gzip属性的
+-j：有bz2属性的
+-Z：有compress属性的
+-v：显示所有过程
+-O：将文件解开到标准输出
+ 
+下面的参数-f是必须的
+ 
+-f: 使用档案名字，切记，这个参数是最后一个参数，后面只能接档案名。
+ 
+# tar -cf all.tar *.jpg 
+这条命令是将所有.jpg的文件打成一个名为all.tar的包。-c是表示产生新的包，-f指定包的文件名。 
+
+# tar -rf all.tar *.gif 
+这条命令是将所有.gif的文件增加到all.tar的包里面去。-r是表示增加文件的意思。 
+
+# tar -uf all.tar logo.gif 
+这条命令是更新原来tar包all.tar中logo.gif文件，-u是表示更新文件的意思。 
+
+# tar -tf all.tar 
+这条命令是列出all.tar包中所有文件，-t是列出文件的意思 
+
+# tar -xf all.tar 
+这条命令是解出all.tar包中所有文件，-x是解开的意思 
+
+ 
+ 
+
+压缩
+ 
+
+tar –cvf jpg.tar *.jpg //将目录里所有jpg文件打包成tar.jpg
+ 
+
+tar –czf jpg.tar.gz *.jpg   //将目录里所有jpg文件打包成jpg.tar后，并且将其用gzip压缩，生成一个gzip压缩过的包，命名为jpg.tar.gz
+ 
+
+tar –cjf jpg.tar.bz2 *.jpg //将目录里所有jpg文件打包成jpg.tar后，并且将其用bzip2压缩，生成一个bzip2压缩过的包，命名为jpg.tar.bz2
+ 
+
+tar –cZf jpg.tar.Z *.jpg   //将目录里所有jpg文件打包成jpg.tar后，并且将其用compress压缩，生成一个umcompress压缩过的包，命名为jpg.tar.Z
+ 
+
+rar a jpg.rar *.jpg //rar格式的压缩，需要先下载rar for linux
+ 
+
+zip jpg.zip *.jpg //zip格式的压缩，需要先下载zip for linux
+ 
+ 
+ 
+解压
+ 
+
+tar –xvf file.tar //解压 tar包
+ 
+
+tar -xzvf file.tar.gz //解压tar.gz
+ 
+
+tar -xjvf file.tar.bz2   //解压 tar.bz2
+ 
+
+tar –xZvf file.tar.Z   //解压tar.Z
+ 
+unrar e file.rar //解压rar
+ 
+unzip file.zip //解压zip
+ 
+
+总结
+ 
+
+1、*.tar 用 tar –xvf 解压
+ 
+2、*.gz 用 gzip -d或者gunzip 解压
+ 
+3、*.tar.gz和*.tgz 用 tar –xzf 解压
+ 
+4、*.bz2 用 bzip2 -d或者用bunzip2 解压
+ 
+5、*.tar.bz2用tar –xjf 解压
+ 
+6、*.Z 用 uncompress 解压
+ 
+7、*.tar.Z 用tar –xZf 解压
+ 
+8、*.rar 用 unrar e解压
+ 
+9、*.zip 用 unzip 解压
+
+
+User/Group
+-------------------------------------------------------------------------------
+%% User names and primary groups
+/etc/passwd
+
+%% Passwords
+/etc/shadow
+
+%% Group information
+/etc/group
+
+%% change file permission
+chmod 755 filename
+%% change permission for foldder and its files recrusively
+chmod -R 755 folder
+
+%% change ownership and its group
+chown asuser filename
+%% change ownership and its group for foldder and its files recrusively
+chown -R asuser:users folder
+
+
+Examples:
+  chown root /u        Change the owner of /u to "root".
+  chown root:staff /u  Likewise, but also change its group to "staff".
+  chown -hR root /u    Change the owner of /u and subfiles to "root".
+
+
+
+周期性执行netstat命令
+watch 'netstat -an | grep 8002'
+watch -n 1 -d 'netstat -anp | grep 8002'
+
+
+TCPDUMP
+tcpdump -i e_tr_alb -s 0 -w PL-3.pcap
+
+m1-4:~ # tcpdump --help
+tcpdump version 3.9.8
+libpcap version 0.9-PRE-CVS
+Usage: tcpdump [-aAdDeflLnNOpqRStuUvxX] [-c count] [ -C file_size ]
+                [ -E algo:secret ] [ -F file ] [ -i interface ] [ -M secret ]
+                [ -r file ] [ -s snaplen ] [ -T type ] [ -w file ]
+                [ -W filecount ] [ -y datalinktype ] [ -Z user ]
+                [ expression ]
+
+
+
+
+Linux常用工具:
+===============================================================================
+mpstat: 多处理器统计
+mpstat                                              %% 输出为从系统启动以来的平均值
+mpstat -V                                           %% version
+mpstat 2 5                                          %% 连续5次每隔两秒对全局所有处理器做个统计
+mpstat -P All 2 3                                   %% 连续3次每隔两秒对每个处理器做个统计
+mpstat -A                                           %% s
+
+top
+
+
+
+nice/renice: 设置或重置进程优先级（-20最高~19最低）
+taskset：指定进程运行在相应的CPU上
+uptime：查看最近重启，CPU负载情况
+vmstat:虚拟内存统计
+iostat: IO统计
+netstat:显示网络状态
+
+
+Java虚拟机工具: 
+===============================================================================
+jstat
+jmap
+jps: 查看JVM进程
+jstack
+jinfo
+jconsole 
+jdb
+jvisualvm
+
+
+mstsc
+
+jmap -dum:format=b,file=cheap.bin 28062
+asuser   28062     1  3 09:41 ?        00:08:30 /usr/java/latest/bin/java -cp /opt/glassfish3/glassfish/modul
+
+ps -ef | grep java
+jstack -F -l 28231|less
+jstack -F -l 19987 > /var/log/ttt.txt
+
+
+
+ssh tunnel 
+===============================================================================
+1. setup auto dynamic forward
+putty --> connection --> SSH --> Tunnels
+on (150.236.223.74) session, setup source port: 18080 (auto + dynamic) --> D18080
+
+2. proxy hostname
+putty --> connection --> Proxy --> proxy hostname: 127.0.0.1 + port: 18080
+putty --> connection --> SSH --> Tunnels
+on (10.175.182.148) session, setup source port: 11111 + destination: 127.0.0.1:11111
+on (10.175.182.148) session, setup source port: 11111 + destination: 127.0.0.1:11111
+
+
+
+
+
+
+
+http://blog.itpub.net/7734298/viewspace-680712/
+http://blog.csdn.net/blade2001/article/details/8877250
+
+ssh tunnel分为三种，本地（L），远程（R）和动态（D）
+
+下面以一些简单的实例进行说明。假设本地的IP为L1.L2.L3.L4，远程有一台ssh主机的ip为R1.R2.R3.R4。
+
+1. 本地端口映射（L）
+-------------------------------------------------------------------------------
+可能的用途：本地的机器不能访问一个网站比如www.twitter.com，但是远程的机器可以访问。你可以从本地机器连接到远程的这台机器。现在希望在本地可以访问www.twitter.com。
+
+A --->  C  (Not OK)
+A --->　B ---> C  (OK)
+在 B 上用本地端口映射， 把 B 的端口映射到 C 的端口，这样 A 访问 B 的端口时候就访问到 C 了 
+
+command:
+ssh -L <local port>:<remote host>:<remote port> <SSH hostname>
+
+example 1. 在 R1.R2.R3.R4 配置端口映射：
+ssh -NfL R1.R2.R3.R4:8086:www.twitter.com:80 R1.R2.R3.R4
+
+解释: 在本地 L1.L2.L3.L4 上直接访问如下网址，就相当于访问 www.twitter.com:80
+http://R1.R2.R3.R4:8086   
+
+
+example 2. 在R1.R2.R3.R4 配置端口映射：
+ssh -NfL 8086:www.twitter.com:80 R1.R2.R3.R4
+
+解释：在本地 L1.L2.L3.L4 还是访问不到www.twitter.com:80，只能在R1.R2.R3.R4访问 http://localhost:8086  
+
+
+2. 远程端口映射（R）
+-------------------------------------------------------------------------------
+可能的用途：你回到了家或者在外要ssh连接学校或者公司的ssh主机，但是由于网关等原因不允许你这样做。不过你可以实现从学校或公司到处在外网上的家里或者其它一台服务器的连接。
+
+command: 
+ssh -R <local port>:<remote host>:<remote port> <SSH hostname>
+
+example 1. 在target (localhost) 机器上 运行下面的命令
+ssh -NfR 8086:localhost:22 R1.R2.R3.R4
+
+然后在 R1.R2.R3.R4上用如下命令登录到 target机器上
+ssh -p 8086 localhost
+
+3. 动态端口映射（D）
+-------------------------------------------------------------------------------
+可能的用途：因为防火墙等因素本地机器不能访问某些资源，但是远程ssh主机可以访问。你可以从本地ssh到远程那台主机。这时你希望用远程主机做代理以方便本地的网络访问，因为最先介绍的本地端口映射只能对指明的个别网站进行访问。
+
+command:
+ssh -D  <local port> <SSH hostname>
+
+在本地执行命令
+ssh -NfD 8086 R1.R2.R3.R4
+
+ 
+应用1：
+本机 可以访问citrix server (150.236.223.74), citrix server 可以访问 VM1-4 (10.175.170.70), 如何直接登录VM1-4
+
+ssh -N -D 18080 ezhendo@150.236.223.74
+
+ssh -N -L 150.236.223.74:8088:10.175.170.70:18080 ezhendo@150.236.223.74
+
