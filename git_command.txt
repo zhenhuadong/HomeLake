@@ -1,3 +1,14 @@
+
+
+‘≠¿Ì
+
+
+”√¿˝
+
+
+
+
+
 alias git /opt/gittool/bin/git
 
 
@@ -147,6 +158,8 @@ git push origin HEAD:refs/for/upg_main_pm
 git push origin HEAD:refs/for/upg15a_r1c01_cp1ep1
 git push origin HEAD:refs/for/upg15a_r1c06_cp1ep6
 git push origin HEAD:refs/for/upg_16a
+git push origin HEAD:2017
+
 
 BL1_UPG16A_LSV1640_R4C01
 
