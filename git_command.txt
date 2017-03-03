@@ -1,0 +1,644 @@
+alias git /opt/gittool/bin/git
+
+
+工作区：working directory
+
+暂存区: staging area
+.git/index           <-- 包含文件索引的目录树，记录文件名、时间戳、文件长度等。
+
+版本库：repository
+.git/HEAD          %% ref: refs/heads/master
+.git/objects/      %% 存储文件内容
+.git/pack/         %% git gc 存储的文件内容打包
+
+.git/logs/         %% 记录commit值，并根据两个commit值去计算对应的改动内容
+
+
+工作区文件有四种状态
+untracked   : 没track
+unmodified  ：已经track, 还没modify, 就是没改动
+modified    ：已经track, 现在modify了，还没有提交本次改动到版本库
+staged      ：已经track, 已经提交到版本库了
+
+
+
+git command
+
+git init
+- 初始化一个仓库
+%% git init --bare name    创建一个命名为name的空的仓库
+%% git init --shared=0777  指定目录属性
+
+git add
+- 将当前目录中的文件添加到索引
+
+git commit
+- 将索引提交到版本库
+%% git commit -a -m "reason HH"    %% 将当前目录中的跟踪的文件 提交到版本库
+
+%% git commit --amend             %%  删除最近一次提交，并用新的提交替代之
+
+
+git status
+– 扫描暂存区相对工作区的改动（只看索引） %% Changes not staged for commit: git reset HEAD <file>
+– 扫描暂存区相对版本库的改动           %% Changes to be committed:  git add <file> update  git checkout -- <file> discard
+– 扫描未被版本库跟踪的文件（扫描目录） %% Untracked files: git add <file>
+- git status -s    %%按人友好的方式每个文件的状态
+- git status -z    %%按机器友好的方式列出每个文件的状态
+
+
+git diff
+- git diff --name-only    %% only list the different file name 
+- git diff mrd BL1_UPG15A_R1C01_20150520 --name-only >../patch_2015_06_16
+- git diff upg_main BL1_UPG15A_R1C_2 --name-only >../patch_2015_06_19_2
+- git diff upg_16a BL1_UPG16A_LSV1607_R2A03  --name-only >../update_filelist.patch
+- git diff upg_16a BL1_UPG16A_LSV1607_R2A03  --stat >../statistic_lineNumber.patch
+
+git clean
+- git clean -n .    %%查看可以删除的 untrack 文件
+- git clean -f .    %%删除 untrack 文件
+- git clean -X -n . %%查看在.gitignore中定义的，可以删除的 untrack 文件，
+- git clean -X -f . %%删除在.gitignore中定义的可删除的 untrack 文件
+- git clean df .    %%删除在.gitignore中定义的可删除的 untrack 文件 和目录
+
+
+git log
+- git log -3                   %% 查看最后3条commit日志
+- git log --before 2013/10/21  %% 查看指定日期之前的commit日志
+- git log --after 2013/10/21   %% 查看指定日期之后的commit日志
+- git log --author="nicole"    %% 查看指定作者的commit日志
+- git log --numstat            %% 查看每次提交的文件列表以及每个文件增加和删除的行数
+- git log --shortstat          %% 查看每次提交有多少文件，已经增加和删除的行数
+- git log --name-status        %% 查看每次提交的文件列表以及每个文件是增加还是修改
+- git log --pretty=format:"%H - %an - %ae - %s"   %% 查看每次提交的commit ID 作者 email 以及subject
+- git log --pretty=oneline     %% 查看每次提交，并以一行显示commit ID 和 subject
+- git log --since="4 days ago" %%最近4天提交的内容
+- git log -SbeanRefContext.xml  %% 查看哪个commit引入的beanRefContext.xml (可以是文件，函数，变量等等)
+- git log --grep="improvements" %% 查看提交记录(message)中包含improvements的所有commit
+
+git shortlog
+- git shortlog             %% 查看每次提交的文件列表以及每个文件是增加还是修改
+- git shortlog -s          %% 查看每人提交了多少次
+- git shortlog -e          %% 查看每人提交的次数，并列出每次提交的主题
+
+git reflog   %%查看HEAD的改动历史
+
+
+git tag
+- git tag                %%列出所有tag
+- git tag -l             %%列出所有tag
+- git tag v1.0           %%创建v1.0的tag,以当前的HEAD为commit ID
+- git tag -d v1.0        %%删除名为v1.0的tag.
+- git show-ref
+- git push origin v1.0    %%向远端推送名为v1.0的tag
+- git push origin ：v1.0  %%删除远端名为v1.0的tag
+- git push origin --tags  %%向远端推送所有的tags
+– git pull origin master:v0.1   %%从远端拉回名为v1.0的tag
+– git pull origin --tags  %%从远端拉回所有的tag
+- git fetch origin --tags
+- git rev-parse v1.0
+
+git gui
+- git gui
+- git gui blame ncd02.cmds   %%查看改动历史
+- git gui browser nicole     
+
+git grep
+- grep -p ‘ncd02’             %%查询包含ncd02的行
+- grep -p ‘ncd02’ -- '*.aa01' %%查询以aa01结尾的文件中包含ncd02的行
+
+git branch
+- git branch name                 %%创建一个name分支
+- git branch –v                   %%看本地分支的版本
+- git branch –l                   %%看本地branch
+- git branch –r                   %%看远端branch
+- git branch –a                   %%看所有branch
+- git checkout -b upg_main        %%创建upg_main 分支         
+- git checkout -t origin/upg_main %%创建一个和远端一样的分支 
+
+git clone
+- git clone --branch sh_pm1_lsv ssh://gerrit.sh.cn.ao.ericsson.se:29418/provisioning/prov-b1.git           %%clone一个远端分支
+
+
+%% upg 15a
+git clone --branch upg_main ssh://gerrit.sh.cn.ao.ericsson.se:29418/provisioning/prov-b1.git
+git push origin HEAD:refs/for/upg_main
+git push origin HEAD:refs/for/upg_16a_plm
+
+%% upg 16a
+git clone --branch upg_16a ssh://gerrit.sh.cn.ao.ericsson.se:29418/provisioning/prov-b1.git
+git push origin HEAD:refs/for/upg_16a
+
+
+git push origin cf-proj
+
+git checkout -t origin/upg15a_r1c01_cp1ep1  
+
+假如你在分支A上想要分支B上的一个commit (xx) ,而不想要B上其它的commit,你可以用下面这个命令
+git cherry-pick xx
+git cherry-pick d54e53db2792cf891a8c94a7936315854583ff9b
+
+假如你向本地主branch不小心提交了某些commit, 你可以将整个branch删掉，然后重新pull下来。
+git pull origin branch:branch
+
+git rebase -i upg_main
+git push origin HEAD:refs/for/upg_main
+git push origin HEAD:refs/for/upg_main_pm
+git push origin HEAD:refs/for/upg15a_r1c01_cp1ep1
+git push origin HEAD:refs/for/upg15a_r1c06_cp1ep6
+git push origin HEAD:refs/for/upg_16a
+
+BL1_UPG16A_LSV1640_R4C01
+
+git checkout -t origin/upg15a_r1c01_cp1ep1 
+git checkout -t origin/upg_main
+git checkout -t origin/upg16a_dataanalytics
+
+
+delete late
+===============================================================================
+ezhendo@CN00084014 /C/work/UPG/develop/prov-b1 (geo)
+$ git pull
+remote: Counting objects: 41043, done
+remote: Finding sources: 100% (100/100)
+remote: Getting sizes: 100% (31/31)
+Receiving objects:  35% (35/100)
+Receiving objects: 100% (100/100), 14.73 KiB, done.
+Resolving deltas: 100% (60/60), completed with 25 local objects.
+From ssh://gerrit.sh.cn.ao.ericsson.se:29418/provisioning/prov-b1
+   39fbddb..f78f5f7  upg_main   -> origin/upg_main
+There is no tracking information for the current branch.
+Please specify which branch you want to merge with.
+See git-pull(1) for details
+
+    git pull <remote> <branch>
+
+If you wish to set tracking information for this branch you can do so with:
+
+    git branch --set-upstream-to=origin/<branch> geo
+
+ezhendo@CN00084014 /C/work/UPG/develop/prov-b1 (geo)
+===============================================================================
+
+
+git config --global user.email "zhenhua.dong@ericsson.com"
+git config --global user.name  "Zhenhua Dong"
+git config --global alias.st status
+git config --global alias.ci commit
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.rb rebase
+git config --global alias.pl pull
+git config --global alias.ps push
+git config --global alias.sh show
+git config --global alias.update "pull --rebase origin master"
+
+
+git config --global alias.ls "log --numstat"                          %% git log --numstat
+git config --global alias.lss "log --since=\"1 days ago\" --numstat"  %% git log --since="1 days ago" --numstat
+git config --global alias.god "reset --soft HEAD^"                    %% git reset --soft HEAD^
+git config --global alias.mygod "reset --hard HEAD^"                  %% git reset --hard HEAD^
+git config --global alias.mylog "log --author=Zhenhua --numstat"       %% git log --author="nicole" --numstat
+
+git log --author=nicole --author=Zhenhua --numstat
+
+"git reset --soft HEAD^" 将最后一次commit以及之后的修改全部打回工作区
+"git reset --hard HEAD^" 完全丢弃最后一次commit以及之后的修改
+"git reset --soft commit" 将该commit之后的修改全部打回工作区
+
+
+git config --global color.ui auto
+git config --global color.branch auto
+git config --global color.diff auto
+git config --global color.interactive auto
+git config --global color.status auto
+
+
+git patch
+
+1. general patch
+git diff upg_main > patch_nicole                              %%针对upg_main的改动做一个general patch
+git apply patch_nicole
+git commit -a -m "SP PM: implement JCA telnet and JCA SH PM counter"
+
+cd /tmp/ezhendo/upg/prov-b1/ISO
+./build.sh –ALL UPG noTest
+
+2. format patch
+git format-patch -M upg_main
+git am 0001-Fix1.patch
+git commit -a -m "SP PM: implement JCA telnet and JCA SH PM counter"
+
+
+如何反悔：
+================================================================================
+Q1：我想丢弃当前的修改怎么办？
+A1：分五种情况，
+1. 将工作区内新建的文件丢弃 (处于untracked状态的文件)
+"git clean -n ." (查看要丢弃的新建文件)
+"git clean -f ." (丢弃全部新建的文件)
+"git clean -f filename" (丢弃新建的文件)
+
+2. 将工作区内的改动丢弃  (处于modified状态的文件)
+"git checkout ."             在工作区内的改动全部丢弃
+"git checkout filename"      在工作区内的该文件的改动丢弃
+
+3. 将暂存区内的改动丢弃  (处于staged状态的文件)
+"git reset ."           全部未commit的index内容打回工作区   (然后参考2)
+"git reset filename"    该文件未commit的index内容打回工作区 (然后参考2)
+
+"git reset --soft"           全部未commit的index内容打回工作区   (然后参考2)
+"git reset --hard"           全部未commit的index内容全部丢掉
+
+4. 将已提交到local repository中commit丢弃
+"git reset --soft HEAD^" 将最后一次commit以及之后的修改全部打回工作区
+"git reset --hard HEAD^" 完全丢弃最后一次commit以及之后的修改
+"git reset --soft commit" 将该commit之后的修改全部打回工作区
+
+5. 将已提交到central repository中的commit丢弃
+先面壁思过，自我好好反省反省，这是公共库哦，
+"git revert HEAD"  其实是用另一次提交来修复之前的提交，只不过系统帮你做了。效果相当于 "git reset HEAD^"
+
+
+如何处理冲突：
+================================================================================
+Q2:我如何处理遇到的冲突？
+A2:分清楚是什么类型的冲突：逻辑冲突, 树冲突, 内容冲突
+1. 逻辑冲突
+git自动处理（合并/应用补丁）成功，但是逻辑上是有问题的。
+example: User1 move file A to file B, while user B has file C still use file A. git merge can be successful, but it is not correct now.
+example: function A return int,  sb change the reture value to bool, it is ok to merge. but the function invoked this procedure is not correct any more
+GIT不去解决这些冲突,需要人去解决和控制，很多时候就是一个bug.
+
+2. 树冲突
+文件名修改造成的冲突，称为树冲突。
+比如，a用户把文件改名为a.c，b用户把同一个文件改名为b.c，那么b将这两个commit合并时，会产生冲突。
+git status
+    added by us:    b.c
+    both deleted:   origin-name.c
+    added by them:  a.c
+如果最终确定用b.c，那么解决办法如下：
+git rm a.c
+git rm origin-name.c
+git add b.c
+git commit
+
+3. 内容冲突
+两个用户修改了同一个文件的同一块区域，git会报告内容冲突。内容冲突很常见，一般发生在merge/patch, 或者 rebase中。
+
+3.1. merge/patch的冲突：需要commit
+先编辑冲突，然后git commit提交。
+对于git来讲，编辑冲突跟平时的修改代码没什么差异。修改完成后，都是要把修改添加到缓存，然后commit。
+<<<<<<< HEAD
+b789               <--- 我的修改
+=======
+b45678910          <--- 别人的修改
+>>>>>>> 6853e5ff961e684d3a6c02d4d06183b5ff330dcc
+
+可以使用可视化的tool修改， 配置可用下面的命令
+git config --global merge.tool gvimdiff
+merge tool candidates: opendiff kdiff3 tkdiff xxdiff meld tortoisemerge gvimdiff diffuse ecmerge p4merge araxis bc3 codecompare emerge vimdiff
+usage:
+git mergetool
+
+
+3.2 rebase的冲突:  不需要commit
+rebase的冲突解决过程，就是解决每个应用补丁冲突的过程。
+解决完一个补丁应用的冲突后，执行下面命令标记冲突已解决（也就是把修改内容加入缓存）：
+git add -u
+然后继续
+git rebase --continue
+
+如果中间遇到某个补丁不需要应用，可以用下面命令忽略：
+git rebase --skip
+
+如果想回到rebase执行之前的状态，可以执行
+git rebase --abort
+
+
+
+C:\Program Files (x86)\Araxis\Araxis Merge 2001 v6.0 Professional
+
+
+
+设置远程仓库
+# 添加(origin 为一个标示，可以随意更换)
+git remote add origin git@gitorious.org:bamboo/mainline.git
+# 删除
+git remote remove origin
+操作远程仓库
+# 添加(origin 为一个标示，可以随意更换) 
+git remote add origin git@gitorious.org:bamboo/mainline.git
+# 删除
+git remote remove origin
+基本操作
+# 提交修改
+git add /path/to/file
+
+git commit -m reason
+
+# 提交全部修改
+
+git commit -a -m reason
+
+# 创建本地分枝
+
+git co -b branch_name
+
+# 查看分枝
+
+git branch
+
+# 删除分枝
+
+git branch -D branch_name
+
+# 查看分支之间的差异
+git diff master branch
+
+
+git ls-files
+- git ls-files               %%列出所有文件
+- git ls-files --stage       %%列出所有文件及其当前版本blob对象ID
+
+
+
+/home/ezhendo/ncd>git ls-files --stage
+100755 cedb1e13c0ad4e22308b92f5f68b59096c4e05d2 0       .gitignore
+100644 0609642bb0f0c9e5b6d68b0c5c76aa23bad0aa0c 0       jua00/perm/dpnprcpm.af03
+100644 9fafa94af8dbbe1831c05e5a72246e2fb6c9a87c 0       jua00/perm/dptogcom.ax02
+100644 778f4e3e8adb4cb5b829fdf01008b785009ee30e 0       jua00/perm/jua00.ab01
+100644 c1d2bc4f04857f8085566eb3a950649245a50f68 0       jua00/perm/jua00pat.ac01
+100644 e9de6ab7f3abcae507b0f90a8a38db9b8c8e40a9 0       jua00/perm/jua00prs.ac01
+100644 7f937b9c9169f425cd4a467e314ed597bc294a64 0       jua00/perm/mdptcpog.ax02
+100755 e5df04e9f849feab5fbbff5757335cc03d2f37b4 0       ncd01.cmds
+100755 9d23d17482ee17baa3cb99590b84d5e5b1c41c1f 0       ncd01/perm/.gitignore
+100644 693fce658f7101fc29bec711bd75b3011b90b51f 0       ncd01/perm/cbph248i.ae02
+100644 51b46203029c13e1c441c1cc1896ff9b029054de 0       ncd01/perm/cbph248o.ae02
+100644 62e12cb5ac4b6fc0245a7206f70a6b4388290df9 0       ncd01/perm/cbph248t.ae02
+100644 0dcb3992bca14c556fa0d0665184b0f84d6fa98e 0       ncd01/perm/cbph248u.ae02
+100644 992ca501a6016c87a8a5f865e757603a75625523 0       ncd01/perm/dpnprcpm.af04
+100644 ecad3f621e7ba5354af634cf3756b200e30b111a 0       ncd01/perm/dpnprcps.af03
+100644 ecad3f621e7ba5354af634cf3756b200e30b111a 0       ncd01/perm/dpnprcps.af04
+100644 fe52c3da33de182881963b00597a1b3d4df749f4 0       ncd01/perm/dpprcpim.af04
+100644 97a7963512e17443bddcd2c89b728169ba7b8853 0       ncd01/perm/imscpcim.ad04
+100644 f6ae7d7e3a37198e16d08773462b688656c1d19f 0       ncd01/perm/imscpog.af03
+100644 c86c843c60d737b910a1ae53ea5569503bc9a35d 0       ncd01/perm/imsogreq.af03
+100644 57a3845357033936ecc4cb2a9c4e389608324001 0       ncd01/perm/mispsend.as01
+100644 49b464dc9cca2838be73cac707b05545dae40aff 0       ncd01/perm/misuptsk.as01
+100644 c027130855b4342f019b5fce51b31604cacc0496 0       ncd01/perm/ncd01.aa01
+100644 7766e8c271b370a80cdf1c3671bd90255ec8a144 0       ncd01/perm/ncd01pat.aa01
+100644 69f530245588dd8ed992c2cefedef1fc4c2f99e8 0       ncd01/perm/ncd01pdn.sanity
+100644 2ed109442e88acee5be6ea9cc482a1ef8c74975e 0       ncd01/perm/ncd01pdn.test
+100644 cbd329a8e006f97b0c2a8f509b306aa8556923d6 0       ncd01/perm/ncd01prs.aa01
+100755 295a83f181fae52c99b58a9d35be1149076a0df9 0       ncd01/temp/.gitignore
+100755 9cc7e4a47fa4974bd5dac1533862935e6d2f28ff 0       ncd01/temp/readme.txt
+100755 000c29a701ee83145dc221664b6aa490d757a4e9 0       ncd02.cmds
+100755 9d23d17482ee17baa3cb99590b84d5e5b1c41c1f 0       ncd02/perm/.gitignore
+100644 97a7963512e17443bddcd2c89b728169ba7b8853 0       ncd02/perm/imscpcim.ad04
+100644 8301f33dddfb0c4f06c4cad420700323180ff07a 0       ncd02/perm/imscpcim.ad05
+100755 0ba42b47e2d48aa31e95c2e783caa15f54cd21be 0       ncd02/perm/imsmpsin.ae03
+100755 a4833fb00868b1a25c869fcc37305eac4432ac79 0       ncd02/perm/imsmpsip.ae03
+100755 4e4de8ae6fd781d26bcb229e57bed64aa30985b4 0       ncd02/perm/imsmpsou.ae03
+100755 8d1c98060fff65ef151d0af278f5e29d6f774926 0       ncd02/perm/imsmpsrs.ae03
+100755 5db2dacf1a148ab778ae7fe433b8a69e8ca7a108 0       ncd02/perm/imsmpsut.ae03
+100644 3403910a89d1075eacc482597b5e5bc10b04fbf0 0       ncd02/perm/mdptsdpp.ac01
+100755 ac9bdf627310543a08eb6be4f1f8218ee91e80e0 0       ncd02/perm/ncd02.aa01
+100755 06a1537e0f8de3c8d562598ea3d0ad5457fa9203 0       ncd02/perm/ncd02pat.aa01
+100755 72bf7e8c3eb69235b12e11fafc3aa3f255932b13 0       ncd02/perm/ncd02prs.aa01
+100644 38f9ca680678412ea56d167d7b44a4669292755c 0       ncd02/perm/sdpoaimp.ac01
+100644 2563a08b8596f249b0636b2eacc5230cebc73d12 0       ncd02/perm/sipegate.aa01
+100644 abd0371d3fe5abbb408375a90046b4b3292c020b 0       ncd02/perm/sipegtrs.aa01
+100644 8a78447f1b2988a6f6ce6a053fa04b3436d74ed2 0       ncd02/perm/sipmsgim.at01
+100644 989a7f697b1e0ba5fb9ea0e10e446d43cfeae771 0       ncd02/perm/sipmsgui.at01
+100644 a036f868ef3c0a3bc364ca4c7f983dc4956dc7fa 0       ncd02/perm/tuhvcrbt.aa01
+100644 f9ded67a919e4ff349d3486c5b0d360ee62b3f58 0       ncd02/perm/tuhvcrim.aa01
+100644 1cb74de9c15ab5bbe6a4d0370fbd42b1a42003b0 0       ncd02/perm/tuhvcrrs.aa01
+100644 c8c0a6d16db0e0ad574cebadf1b62d89a9248645 0       ncd02/perm/tuhvim.ad01
+100644 94abee6f7eb83f06c5bead42944c6fd7796b7f2f 0       ncd02/perm/tumrp1xx.ab01
+100644 c3a5f744c3b351961592b00bb877555b06fcbf63 0       ncd02/perm/tumrpmh.ab01
+100644 1e02188c7f0e2b2c24c72645e688b16b4129de22 0       ncd02/perm/turp1xx.ad01
+100644 4efa4a89a868ef05e38d057f06cf0c9869123566 0       ncd02/perm/turpmhui.ad01
+100755 295a83f181fae52c99b58a9d35be1149076a0df9 0       ncd02/temp/.gitignore
+100755 a00b55bd68541a164168ae723fddd22b03217a8a 0       readme.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
+/home/ezhendo/ncd>
+/home/ezhendo/ncd>tree .git
+.git
+|-- COMMIT_EDITMSG
+|-- FETCH_HEAD
+|-- HEAD
+|-- ORIG_HEAD
+|-- branches
+|-- config
+|-- description
+|-- hooks
+|   |-- applypatch-msg.sample
+|   |-- commit-msg.sample
+|   |-- post-update.sample
+|   |-- pre-applypatch.sample
+|   |-- pre-commit.sample
+|   |-- pre-rebase.sample
+|   |-- prepare-commit-msg.sample
+|   `-- update.sample
+|-- index
+|-- info
+|   |-- exclude
+|   `-- refs
+|-- logs
+|   |-- HEAD
+|   `-- refs
+|       |-- heads
+|       |   |-- master
+|       |   `-- nicole
+|       `-- remotes
+|           `-- origin
+|               |-- HEAD
+|               `-- master
+|-- objects
+|   |-- 04
+|   |   `-- a4e53f315ef352b0ce1ff38e6de8a89c7bf5a7
+|   |-- 06
+|   |   |-- 026c514c0c042e547d2a067c866027a444b2c7
+|   |   `-- 89e745e0edc6f2590ff508700c72367c1e3c9c
+|   |-- 08
+|   |   `-- 30c0fc0318a30b366644d7498e7e26def32530
+|   |-- 0a
+|   |   `-- 2c02046cf035e321769d54dfcab76fa202dc23
+|   |-- 0d
+|   |   `-- 366362c405b8d2d40ca26af8909da0daa681b7
+|   |-- 0e
+|   |   `-- 1547684c199be6598dc884bc4356879739ffce
+|   |-- 15
+|   |   `-- 8dced8a5ad1ae52642e19b85de17962b09c318
+|   |-- 16
+|   |   `-- 185fc21515faa1bf3a33aacc8d0d10a501b854
+|   |-- 17
+|   |   `-- 6745aa52e003f3d0f523ae6b1a25e67d985bb0
+|   |-- 18
+|   |   `-- 8e59233c875d582adf4efd0abc02c1c38a081b
+|   |-- 1b
+|   |   `-- fe93e7976cefcb9ae25970dadeba06d8ab8a00
+|   |-- 1e
+|   |   |-- 02188c7f0e2b2c24c72645e688b16b4129de22
+|   |   `-- c0730c74e3ba6d9a05d1204d651c0c20abe23c
+|   |-- 23
+|   |   `-- 35382107e74d881d7e9d6c0e50ec9c213f8602
+|   |-- 2a
+|   |   `-- d7346ef3276434239b61ca35161474a87b4d34
+|   |-- 39
+|   |   `-- f51cb5b55ac55a62b634b42b18beb3b0a06558
+|   |-- 3b
+|   |   `-- e89cffee4d78c47bbc25fd5f573d9321855d6f
+|   |-- 41
+|   |   |-- 37a9e1810d929fc474564dcb557f293dac0ac8
+|   |   `-- 804c8a10781c9a4f687f80d55cf61090088113
+|   |-- 42
+|   |   `-- 8da6f888841116adc5f39b21da72b08f0b7680
+|   |-- 43
+|   |   `-- e0237ba4d7bcf2e09304b828a42a99ddb48454
+|   |-- 44
+|   |   `-- d04da8d71617b302a87feca13024d3c243115a
+|   |-- 4b
+|   |   `-- 19398b6016c5c56e90f0a34d8b82bcc41c494a
+|   |-- 4c
+|   |   `-- 508bda9d3a7ef751b2c1f4e9be630cb138c682
+|   |-- 4e
+|   |   `-- fa4a89a868ef05e38d057f06cf0c9869123566
+|   |-- 52
+|   |   `-- bc071a316cc3a71377130a18169b8c224fdd8e
+|   |-- 55
+|   |   |-- 28bd280a101ab3ab917a4ebafb0613d41553cf
+|   |   `-- 6113cfdf232a41e9e976c04987659314575f37
+|   |-- 56
+|   |   `-- cd0754edcc3cca89400311c282f4570a57cb36
+|   |-- 64
+|   |   `-- 189090de4aa216b31dd22e4b02ed8bc8dd4243
+|   |-- 65
+|   |   `-- 81fa3ca499de7b6dee62c9d79b2a8b6b7c18e5
+|   |-- 66
+|   |   `-- 35ad9ac5be2818375c1bf8f3f825b9100bc83b
+|   |-- 6d
+|   |   `-- 42e846ff08f689690d0fdaa539f59cf9c178c5
+|   |-- 73
+|   |   `-- 5f8b0d9eedc6c51321db43d25d7f991fe377e7
+|   |-- 77
+|   |   `-- 13edf1b33fc70760c641f758d546758d45e447
+|   |-- 7b
+|   |   `-- 2f2690d6ba3135efc4f667f0d7ba4a93703af2
+|   |-- 7c
+|   |   |-- b857f12668e68f38c846b6ba9537e604217efc
+|   |   `-- bde93525becfc360408adf12a63717d2a5d38b
+|   |-- 80
+|   |   `-- f3b333771640055123411454c4bca8c4ad2399
+|   |-- 82
+|   |   `-- 6ef17f532df3f31ecbae3c4e3f6fb9d16023c0
+|   |-- 8a
+|   |   `-- 8ca3db86cf89c087668c48be9700a47b0f8b7a
+|   |-- 90
+|   |   `-- b514609e794cd01f25388fd845d1de5363b24a
+|   |-- 94
+|   |   |-- 113de2f0bd237f75f3ffb8df42a387369c64ee
+|   |   `-- abee6f7eb83f06c5bead42944c6fd7796b7f2f
+|   |-- 95
+|   |   `-- 9a84f5091466345dcafff226d5c5aacd174473
+|   |-- 99
+|   |   `-- a60af36d55f61fb63f80fbeacfc8a67a9ebaf0
+|   |-- 9d
+|   |   `-- bdf250a89530a5c63102d1f6d83e96cbd4a560
+|   |-- 9f
+|   |   `-- 548879a91fa40a08a3075e3c15f247ca071b64
+|   |-- a0
+|   |   |-- 0b55bd68541a164168ae723fddd22b03217a8a
+|   |   `-- 7cf15004ac524d39ee6d7b2c6594a8e08f7385
+|   |-- a4
+|   |   `-- 857359d3f9f754a1e838f23c117e2815d2a80b
+|   |-- a9
+|   |   |-- 8f8cb51e5d3d6ed231eb2114478ac243d572c2
+|   |   `-- fc42a8495b7c6dee6722a78e96dfa69a3549be
+|   |-- b3
+|   |   `-- 3e6466aca800d42ac425961d2641e193260730
+|   |-- b5
+|   |   `-- f34d8a92ee4f3d0c47e071c1a882f769a820e9
+|   |-- bb
+|   |   `-- bf5090a990daf978d84679e6f13370ea376c7c
+|   |-- c1
+|   |   `-- f97058be7ad9c1dae653bfda96dc39945f40e4
+|   |-- c3
+|   |   `-- a5f744c3b351961592b00bb877555b06fcbf63
+|   |-- cc
+|   |   `-- 3699445b6ac9a62ef163038e79440444093f5a
+|   |-- ce
+|   |   |-- d653bb544ec4adf280cc4097e3544ce4c2bd5c
+|   |   `-- db1e13c0ad4e22308b92f5f68b59096c4e05d2
+|   |-- d2
+|   |   |-- 1d168d8bf11bfc91574080b87b288c27e7b4b3
+|   |   `-- 321111cec063a2f79fb587d289be3a0e9d09eb
+|   |-- d5
+|   |   |-- 2fe23b921511e68d61776c1f272896a568d462
+|   |   `-- b3cfb3371ac0233bf24c607306b025f3aedc98
+|   |-- d6
+|   |   `-- 4a48288fdd40c176adfaf9161b33e1fbe4c349
+|   |-- d8
+|   |   `-- bccd4b55a596e508035d8c53d79ed290c63a9e
+|   |-- dd
+|   |   `-- c2743a5b803c6ce9330f7be9a18e00b221c790
+|   |-- de
+|   |   |-- 3e8e63d2da17d29e2945da84280754e8056168
+|   |   `-- 4bf2173befb4848c6891f3c88f89132fb9235b
+|   |-- e3
+|   |   |-- 2b17536f511a05dd3d690fc1da054f42b3e0f9
+|   |   |-- 73b6dd88cf37e5cb0eebded59d94bafa797edd
+|   |   `-- a2b5b74d89a5bb9fd17df6eb725c09f63321fb
+|   |-- e5
+|   |   |-- 98cfacd0c534709430ec511771d71d77efabb4
+|   |   `-- df04e9f849feab5fbbff5757335cc03d2f37b4
+|   |-- eb
+|   |   `-- 811ea53dabc604005dbd167f6a673b994cbd5b
+|   |-- ec
+|   |   |-- 21c8a81d0499da50c7ecf65a00ac6e95f870b4
+|   |   |-- abf06565b70cc4aaddf6ea5c217658cdf70367
+|   |   `-- ad3f621e7ba5354af634cf3756b200e30b111a
+|   |-- ee
+|   |   `-- 06eab2f9a2e5cd832f063f341aa9d3e8578136
+|   |-- f1
+|   |   |-- 36bc8b1671a7fa41143d60e0209a45827909f8
+|   |   `-- 4398d471985dccc3612dd4567843f2217ee92a
+|   |-- f3
+|   |   `-- d6bdde66c839b6cb7c21e1cc114352a7a19442
+|   |-- f4
+|   |   `-- 56a9ed103604abcaaebc24b744cb1333b1f43c
+|   |-- f8
+|   |   `-- 3e5d55cfe2ea883e620820c23f50090265c517
+|   |-- f9
+|   |   `-- ded67a919e4ff349d3486c5b0d360ee62b3f58
+|   |-- info
+|   |   `-- packs
+|   `-- pack
+|       |-- pack-d72295c770a9d9d8514925aa27f8cfb562b0e184.idx
+|       `-- pack-d72295c770a9d9d8514925aa27f8cfb562b0e184.pack
+|-- packed-refs
+`-- refs
+    |-- heads
+    |   |-- master
+    |   `-- nicole
+    |-- remotes
+    |   `-- origin
+    |       |-- HEAD
+    |       `-- master
+    `-- tags
+
+85 directories, 117 files
+/home/ezhendo/ncd>
