@@ -6,10 +6,10 @@ public class GeneratorTest {
 		String name = getRandomName('-');
 		System.out.println(name);
 		
-		for(int i=0;i<100;i++) {
-			String name2 = getRandomName();
-			System.out.println(name2);	
-		}
+//		for(int i=0;i<100;i++) {
+//			String name2 = getRandomName();
+//			System.out.println(name2);	
+//		}
 	}
 	
 	public static String  getRandomName(char separator) {
