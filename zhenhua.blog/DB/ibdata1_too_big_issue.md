@@ -65,7 +65,7 @@ UNDO日志在MySQL中的两个作用：回滚和MVCC。MVCC是通过事务版本
 可以在my.cnf中配置undo日志，
 ```
 #undo log
-innodb_undo_directory = /var/data_analytic/data
+innodb_undo_directory = /var/mysql/data
 innodb_undo_tablespaces = 2   <-- 两个UNDO日志文件
 innodb_undo_logs = 128        <-- 128个回滚段
 innodb_undo_log_truncate = ON <-- 打开truncate日志文件开关
