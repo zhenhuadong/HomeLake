@@ -39,15 +39,15 @@ SHOW FULL PROCESSLIST\G
      Id: 235662
    User: drill
    Host: 172.17.242.99:12397
-     db: cudb_user_data
+     db: user_data
 Command: Execute
    Time: 403503
   State: Sending data
-   Info: select count(*) from ImsServInd_Data, Mmtel_CommonData where ImsServInd_Data.ENTRY_KEY=Mmtel_CommonData.ENTRY_KEY
+   Info: select count(*) from Ind_Data, CommonData where Ind_Data.ENTRY_KEY=CommonData.ENTRY_KEY
 ```
 或者show processlist
 ```
-|9866|drill|169.254.121.2:45091|NULL|Execute|2274092|Creating sort index| SELECT * FROM (SELECT * FROM `cudb_user_data`.`USER_Identities` WHERE `IMSI` LIKE '20605%') AS `t` L |
+|9866|drill|169.254.121.2:45091|NULL|Execute|2274092|Creating sort index| SELECT * FROM (SELECT * FROM `user_data`.`identities` WHERE `IM` LIKE '20605%') AS `t` L |
 ```
 ### 怎么解决持续增加的问题
 kill 这个长时间运行的查询，释放老的UNDO日志占用的空间。这一空间可以被重用，但是日志文件本身不变小。
