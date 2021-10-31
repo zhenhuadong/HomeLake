@@ -18,7 +18,7 @@ public class URLEncodeDecoderDemo {
 		System.out.println(URLDecoder.decode(url_a2, "UTF-8"));
 		System.out.println(URLDecoder.decode(url_j2, "UTF-8"));
 		
-		System.out.println(URLEncoder.encode("https://baike.baidu.com/item/ÄãºÃ/32416?fr=aladdin", "UTF-8"));
+		System.out.println(URLEncoder.encode("https://baike.baidu.com/item/ï¿½ï¿½ï¿½/32416?fr=aladdin", "UTF-8"));
 		System.out.println(URLEncoder.encode("https://baike.baidu.com/item/%E4%BD%A0%E5%A5%BD/32416?fr=aladdin", "UTF-8"));
 		System.out.println(URLDecoder.decode("https%3A%2F%2Fbaike.baidu.com%2Fitem%2F%E4%BD%A0%E5%A5%BD%2F32416%3Ffr%3Daladdin","UTF-8"));
 		System.out.println(URLDecoder.decode("https://baike.baidu.com/item/%E4%BD%A0%E5%A5%BD/32416?fr=aladdin", "UTF-8"));

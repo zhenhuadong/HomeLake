@@ -18,10 +18,10 @@ public class PoolDemo {
     	testReaderUtilWithPool();
     	cleanup();
     }
-    
-    
+
+
     private static void cleanup() {
-    	
+
     	File file = new File(fileName);
     	file.delete();
 	}
@@ -35,14 +35,14 @@ public class PoolDemo {
 
 
 	public static void testReaderUtilWithoutPool() throws IOException{
-    	
+
     	Reader in = new FileReader(fileName);
     	ReaderUtilWithoutPool readerUtil = new ReaderUtilWithoutPool();
     	String result = readerUtil.readToString(in);
     	System.out.println(result);
     }
-    
-    
+
+
     public static void testReaderUtilWithPool() throws IOException{
     	Reader in = new FileReader(fileName);
     	ReaderUtilWithPool readerUtil = new ReaderUtilWithPool(new GenericObjectPool<StringBuffer>(new StringBufferFactory()));
