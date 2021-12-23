@@ -16,21 +16,53 @@
 
 
 
-### image, container, overlayer之间的关系
+### 1.2 image, container, overlayer之间的关系
 container是image的运行时状态，它把image的各overlay2层merge到一起，并增加一层：writeable layer.
+
+
 image是有 image元数据，layer元数据 和 layer数据组成。 
-image的元数据：imagedb
-    /var/lib/docker/image/overlay2/imagedb/content/sha256/<image Id>
-    其中的RootFS.Layers中有layer元数据的sha256值
-    该目录下image Id的数目和当前Worker上的image是一样的
-layer的元数据：layerdb
-    /var/lib/docker/image/overlay2/layerdb/sha256/
-    是以chain的方式从最底层关联到最上层的。公式：chainID=sha256sum(H(chainID) diffid)
-    /var/lib/docker/image/overlay2/layerdb/sha256/<chainID>/chach-id中存的是数据的实际地址
-layer数据：
+- image的元数据：imagedb
+    - /var/lib/docker/image/overlay2/imagedb/content/sha256/<image Id>
+    - 其中的RootFS.Layers中有layer元数据的sha256值
+    - 该目录下image Id的数目和当前Worker上的image是一样的
+- layer的元数据：layerdb
+    - /var/lib/docker/image/overlay2/layerdb/sha256/
+    - 是以chain的方式从最底层关联到最上层的。
+      - 公式：chainID=sha256sum(H(chainID) diffid)
+    - /var/lib/docker/image/overlay2/layerdb/sha256/<chainID>/chach-id中存的是数据的实际地址
+- layer数据：
     /var/lib/docker/overlay2/<layer id>
 
-sudo docker prune -a 可以删除所有没有container引用的image和layer
+#### image的垃圾回收 和 容器的回收：
+
+- docker删除垃圾镜像
+注意，该方法在云平台不建议使用
+sudo docker prune -a #可以删除所有没有container引用的image和layer
+
+- kubelet删除垃圾镜像
+
+    一般情况是kubelet每五分钟扫描一下未用的镜像，它通过imageManager和cadvisor监控磁盘使用率，超过85%就会触发镜像垃圾回收，从最老的未用image开始回收，一直到磁盘使用率低于80%。
+
+    在kubelet 配置文件（--config=/var/lib/kubelet/config.yaml）中配置
+    - imageMinimumGCAge            Default: "2m", 通常配置成0s
+    - imageGCHighThresholdPercent  Default: 85
+    - imageGCLowThresholdPercent   Default: 80
+
+- kubelet删除垃圾（已死）容器
+    一般情况下kubelet每分钟扫描一下已死的容器，
+  - MinAge (--minimum-container-ttl-duration) 一般为0，随时可以垃圾收集
+  - MaxPerPodContainer (--maximum-dead-containers-per-container)，一般为1，为了log -p
+  - MaxContainers (--maximum-dead-containers), 一般为-1， 无限制
+
+
+
+#### image的加速：
+
+--image-pull-progress-deadline duration     Default: 1m0s
+
+
+--eviction-hard、--eviction-soft 及 --eviction-minimum-reclaim
+
 
 在worker上的image，通过image id, 可以找到对应的数据节点。
 $ sudo docker inspect <imagename>:<tag> -f {{.Id}}
@@ -88,3 +120,30 @@ sudo cat /var/lib/docker/image/overlay2/layerdb/sha256/<layer_chainID>/cache-id 
 
 
 
+### 1.3 CNI，CRI，CSI分别是什么
+- CRI（Container Runtime Interface）：容器运行时接口，提供计算资源
+- CNI（Container Network Interface）：容器网络接口，提供网络资源
+- CSI（Container Storage Interface）：容器存储接口，提供存储资源
+
+#### CRI
+kubelet内置grpc的client, 与ContainerRuntime的CRI shim也就是grpc的server通信。protocol buff API 包括两个grpc服务，imageService和runtimeService. 
+
+imageService负责从image仓库拉取，检查，删除image. 
+
+runtimeService负责管理pod和container的生命周期，以及与container的交互调用（exec/attach/port-forward). Sandbox相关的API代表着对Pod的操作， container相关的API代表对container的操作。
+
+#### 创建一个pod的过程
+
+
+
+Pending： api server创建了Pod；没有Resource就会一直这种状态
+Creating: shceduler为pod指定workerNode； pull image失败就会一直处于这种状态
+Running: 
+Crashloop Back: 
+
+
+
+
+
+#### CNI
+https://www.cnblogs.com/goldsunshine/p/10701242.html
