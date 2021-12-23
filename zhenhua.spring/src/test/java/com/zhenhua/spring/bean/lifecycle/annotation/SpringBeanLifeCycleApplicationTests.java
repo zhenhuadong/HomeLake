@@ -1,4 +1,4 @@
-package com.zhenhua.spring.bean.lifecycle;
+package com.zhenhua.spring.bean.lifecycle.annotation;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

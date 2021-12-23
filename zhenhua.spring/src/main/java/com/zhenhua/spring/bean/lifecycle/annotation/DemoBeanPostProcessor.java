@@ -1,9 +1,7 @@
-package com.zhenhua.spring.bean.lifecycle;
+package com.zhenhua.spring.bean.lifecycle.annotation;
 
 import org.springframework.beans.factory.config.BeanPostProcessor;
-import org.springframework.stereotype.Component;
 
-@Component
 public class DemoBeanPostProcessor implements BeanPostProcessor {
 
 	public Object postProcessBeforeInitialization(Object bean, String beanName) {
@@ -11,7 +9,6 @@ public class DemoBeanPostProcessor implements BeanPostProcessor {
 			((DemoSpringLifeCycleBean) bean).postProcessBeforeInitialization();
 		}
 		return bean;
-
 	}
 
 	public Object postProcessAfterInitialization(Object bean, String beanName) {

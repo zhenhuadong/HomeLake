@@ -1,0 +1,20 @@
+
+
+package: com.zhenhua.spring.bean.annotation.lifecycle
+demo spring bean life cycle by annotation
+
+
+package: com.zhenhua.spring.bean.lifecycle
+demo spring bean life cycle by xml
+
+
+
+issue 1: 
+	"spring.lifecycle.bean.name" in application.properties has been changed, but it doesn't take effect.
+root cause: 
+	"src/main/resources" isn't in your classpath.
+solution: 
+	open .classpath and add the following line if it is missing
+	<classpathentry kind="src" path="src/main/resources" excluding="**/*.java" />
+
+

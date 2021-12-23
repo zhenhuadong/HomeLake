@@ -3,8 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	<!-- callbackinterfaces-->
-	<bean id="demoSpringLifeCycleBean" class="com.zhenhua.spring.bean.lifecycle.DemoSpringLifeCycleBean" init-method="initMethod" destroy-method="destroyMethod">
-		<property name="name" value="demo22"/>
+	<!-- callbackinterfaces -->
+	<bean id="demoSpringLifeCycleBean"
+		class="com.zhenhua.spring.bean.lifecycle.xml.DemoSpringLifeCycleBean"
+		init-method="initMethod" destroy-method="destroyMethod">
+		<property name="name" value="demo2" />
 	</bean>
+
+	<!-- handle all beans in one place before and after bean initialization -->
+	<bean
+		class="com.zhenhua.spring.bean.lifecycle.xml.DemoBeanPostProcessor"></bean>
 </beans>
