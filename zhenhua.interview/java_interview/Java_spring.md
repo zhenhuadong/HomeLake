@@ -24,3 +24,13 @@
 # Junit 注解
 
 # Spring 注解
+- @Component
+  - @Controller
+  - @Service
+  - @Repository
+- @Autowired  --- DI 依赖注入， 核心注解
+- @Transactional
+
+- @Cacheable
+- 
+refer to: https://www.cnblogs.com/shy1766IT/p/9993611.html
