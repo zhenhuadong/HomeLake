@@ -1,3 +1,5 @@
+package leetcode.zhenhua;
+
 import java.util.*;
 
 public class Main {

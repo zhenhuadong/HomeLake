@@ -1,3 +1,5 @@
+package leetcode.zhenhua;
+
 import java.util.Objects;
 
 public class TwoStringArrayEqual {
