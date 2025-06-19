@@ -3,57 +3,63 @@ package leetcode.zhenhua.linked;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class Leetcode141 {
+public class Leetcode142 {
 
-    public boolean hasCycle(ListNode head) {
-        if(head == null)
-            return false;
-
+    public ListNode detectCycle(ListNode head) {
+        if(head == null) {
+            return null;
+        }
         ListNode fast = head;
         ListNode slow = head;
+
         while(fast != null){
             slow = slow.next;
             if(fast.next != null){
                 fast=fast.next.next;
             } else {
-                return false;
+                return null;
             }
 
             if(fast == slow){
-                return true;
+                ListNode ans = head;
+                while(ans != slow){
+                    ans = ans.next;
+                    slow = slow.next;
+                }
+                return ans;
             }
         }
-        return false;
+        return null;
     }
-    public boolean hasCycle1(ListNode head) {
-        HashMap<ListNode, Boolean> map = new HashMap<>();
+
+    public ListNode detectCycle1(ListNode head) {
+        HashMap<ListNode, ListNode> map = new HashMap<>();
 
         while(head != null){
-            if(Objects.equals(Boolean.TRUE, map.get(head))){
-                return true;
+            if(map.get(head) !=null){
+                return head;
             }
-            map.put(head, Boolean.TRUE);
+            map.put(head, head);
             head = head.next;
         }
-        return false;
+        return null;
     }
-
 
     public static void main(String[] args) {
         int[] listA = {3,2,0,-4};
-        int aPos = 2;
+        int aPos = 1;
         int[] listB = {1,2};
         int bPos = 0;
         int[] listC = {1};
         int cPos = -1;
 
-        Leetcode141 l = new Leetcode141();
+        Leetcode142 l = new Leetcode142();
         ListNode headA = l.buildList(listA, aPos);
-        System.out.println(Objects.equals(true, l.hasCycle(headA)));
+        System.out.println(l.detectCycle1(headA).val);
         ListNode headB = l.buildList(listB, bPos);
-        System.out.println(Objects.equals(true, l.hasCycle(headB)));
+        System.out.println(l.detectCycle(headB).val);
         ListNode headC = l.buildList(listC, cPos);
-        System.out.println(Objects.equals(false, l.hasCycle(headC)));
+        System.out.println(l.detectCycle(headC));
     }
 
     public ListNode buildList(int[] listA, int pos){
