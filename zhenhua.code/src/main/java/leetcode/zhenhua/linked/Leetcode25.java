@@ -7,33 +7,39 @@ public class Leetcode25 {
     public ListNode reverseKGroup(ListNode head, int k) {
         ListNode dummy = new ListNode(0);
         dummy.next = head;
-
         ListNode pre = dummy;
+        ListNode cur = head;
 
-        while(head != null) {
-            ListNode tail = pre;
-            for(int i = 0; i<k; ++i){
-                tail = tail.next;
-                if(tail == null) {
-                    return dummy;
-                }
-            }
-            ListNode next = tail.next;
-            while(cur != null && i < k){
+        int count;
+        for (count = 1; cur.next != null; count++) {
+            cur = cur.next;
+        }
+
+        for (int i = 0; i < count / k; i++) {
+            cur = head;
+            for (int j = 0; j < k; j++) {
                 ListNode next = cur.next;
                 cur.next = pre;
                 pre = cur;
                 cur = next;
-                i++;
             }
-            temp.next = pre;
-            temp = cur;
         }
 
         return dummy.next;
     }
 
-    
+    public ListNode retate(ListNode pre, int k){
+        ListNode cur = pre.next;
+        int i =1;
+        for(; i<k && cur != null & cur.next!=null; i++){
+            ListNode next = cur.next;
+            cur.next = next.next;
+            next.next = pre.next;
+            pre.next = next;
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         Leetcode25 l = new Leetcode25();
         int[] nums = {1,2,3,4,5};
