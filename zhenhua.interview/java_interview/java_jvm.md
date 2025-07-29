@@ -48,11 +48,22 @@ java代码*.java,先通过javac编译出*.class文件，然后JVM的class loader
   - 垃圾收集器：搜集并删除未引用的对象
 - 本地库接口(Native Interface)
 - 运行时数据区(Runtime Data Area)
-  - 方法区：JDK7之前成为永久代，使用JVM内存MaxPermsize; JDK8开始使用元空间,直接使用本地内存,可以限制也可以不限制大小（限制使用：MetaspaceSize)。 当然超出内存会出现OOM:"PermGen space" 或者 OOM:"Metaspace"。 往往是加载了大量的第三方包，部署的应用过多，大量动态生成的反射类等等原因导致的。
+  - 方法区/堆为线程共享，栈/本地方法栈/程序计数器为线程独享。方法区存类级别信息（类，常量，静态变量），堆区存对象级别信息，栈存局部变量和对象的引用。
+  - 方法区：JDK7之前成为永久代，使用JVM内存,(JVM PermSize/MaxPermSize); JDK8开始使用元空间,直接使用本地内存,可以限制也可以不限制大小（限制使用：MetaspaceSize/MaxMetaspaceSize)。 当然超出内存会出现OOM:"PermGen space" 或者 OOM:"Metaspace"。 往往是加载了大量的第三方包，部署的应用过多，大量动态生成的反射类, 或者类加载器泄漏等等原因导致的。 注意两点：1）静态变量存在方法区，2）不同于其它常量，JDK8后字符串常量已经从方法区移到堆区了
   - 堆区![JVM heap](./pictures/jvm_heap.png)
     - 新生代：eden+from+to, 垃圾回收minorGC采用复制算法。eden内存不足时触发一次minorGC. 多次(默认15次）minorGC后仍然存活的就进入老年代。
     - 老年代: 垃圾回收majorGC采用标记-清除/整理算法. 老年代不足分配大对象，或者接受从新生代晋升的对象时就会触发一次。
     - FullGC: 垃圾回收整个堆包括新生代+老年代+永久代（如果有）
+    - 回收：强引用（永不回收）> 软引用(内存不足回收) > 弱引用（下次GC回收）> 虚引用（回收时通知）
     - 垃圾回收算法有哪些：
+      - 标记清除（Mark-sweep)：简单，有碎片
+      - 标记复制（Mark-copy)：无碎片，有一半空闲
+      - 标记整理（Mark-compact)：无碎片，移动对象开销大
+      - 分代回收（Generation Collection）：堆中不同的代采用不同的回收算法
+        - 新生代垃圾回收算法有：Serial, Parallel Scavenge
+        - 老年代垃圾回收算法有：Serial Old， Parallel Old， CMS（concurrent Mark-Sweep)
+        - 整个堆的垃圾回收算法有：G1（Garbage-First），ZGC，Shenandoah
+  - 栈/本地方法栈/程序计数器
+    - 
 
 
