@@ -53,6 +53,26 @@ java代码*.java,先通过javac编译出*.class文件，然后JVM的class loader
   - 堆区![JVM heap](./pictures/jvm_heap.png)
     - 新生代：eden+from+to, 垃圾回收minorGC采用复制算法。eden内存不足时触发一次minorGC. 多次(默认15次）minorGC后仍然存活的就进入老年代。
     - 老年代: 垃圾回收majorGC采用标记-清除/整理算法. 老年代不足分配大对象，或者接受从新生代晋升的对象时就会触发一次。
+    - 常见的JVM参数
+      - -XX:+UseContainerSupport
+      - -Xmx1g   // JVM最大堆大小，例子1G，默认物理内存1/4， 优先级高于MaxRAMPercentage
+      - -Xms1g   // JVM初始堆大小，例子1G，默认物理内存1/64 
+      - -XX:SurvivorRatio=8  // JVM堆的新生代中eden:survivor=1:8, 说明80%为eden区，两个survivor每个为10%为
+      - -XX:NewRatio=2    // JVM堆的新生代：老年代=1：2，说明新生代占堆的1/3
+      - -XX:PermSize=256m    // JVM 初始永久代大小，例子256M，默认物理内存1/64 （JDK8+已移除）
+      - -XX:MaxPermSize=256m // JVM 最大永久代大小，例子256M，默认物理内存1/4  （JDK8+已移除）
+      - -XX:MetaspaceSize=256m    // JVM 初始元空间（永久代）大小，例子256M
+      - -XX:MaxMetaspaceSize=256m // JVM 最大元空间（永久代）大小，例子256M，默认可以是物理内存大小
+      - -XX:MaxRAMPercentage=75.0  // JVM堆最大占容器内存的75%
+      - -Xss1m   // JVM线程栈大小，例子1M，默认1M
+      - -XX:MaxDirectMemorySize=1G   //JVM直接内存（堆外内存）最大大小，例子1G，默认与Xmx（堆）相同
+      - -XX:+HeapDumpOnOutOfMemoryError   // 内存溢出时生成dump文件
+      - -XX:HeapDumpPath=/path/to/heapdump.hprof  // dump文件存储路径，需要在pod上挂载persistent volume
+      - -XX:+UseG1GC // JDK9+ 默认配置
+      - -XX:G1HeapRegionSize //G1 单个区域的大小（1M到32M之间），总区域有2048个，支持堆2G到64G
+      - -XX:MaxGCPauseMillis //设置回收的最大时间
+      - -XX:ParallelGCThreads //设置并行垃圾回收线程
+    - 总内存=堆内存+栈大小*线程数+方法区+本地内存
     - FullGC: 垃圾回收整个堆包括新生代+老年代+永久代（如果有）
     - 回收：强引用（永不回收）> 软引用(内存不足回收) > 弱引用（下次GC回收）> 虚引用（回收时通知）
     - 垃圾回收算法有哪些：
