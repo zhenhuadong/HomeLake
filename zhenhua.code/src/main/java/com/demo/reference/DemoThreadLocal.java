@@ -1,39 +1,73 @@
 package com.demo.reference;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.*;
 import java.util.concurrent.*;
-
-import static java.util.concurrent.ThreadPoolExecutor.*;
-
 public class DemoThreadLocal {
+    private static ThreadLocal<String> threadLocal = new ThreadLocal<>();
+    private static ThreadLocal<String> inheritableThreadLocal = new InheritableThreadLocal<>();
     public static void main(String[] args) {
-        ThreadPoolExecutor pool = new ThreadPoolExecutor(10,
-                20,
-                5,
-                TimeUnit.SECONDS,
-                new ArrayBlockingQueue<>(5),
-                Executors.defaultThreadFactory(),
-                new AbortPolicy()
-        );
-        ExecutorService pool2 = Executors.newCachedThreadPool();
-        Set<String> s = new HashSet<>();
-//        Collections.synchronizedList();
-//        List<String> l = new ArrayBlockingQueue<>();
+        inheritableThreadLocal.set("parent - inheritableThreadLocal");
+        threadLocal.set("parent - threadLocal");
+        System.out.println("main thread start: inheritableThreadLocal - " + inheritableThreadLocal.get());
+        System.out.println("main thread start: threadLocal - " + threadLocal.get());
+//        new Thread(
+//                () -> {
+//                    System.out.println("Child thread: inheritableThreadLocal - " + inheritableThreadLocal.get());
+//                    System.out.println("Child thread: threadLocal - " + threadLocal.get());
+//                }
+//        ).start();
+//        System.out.println("main thread end: inheritableThreadLocal - " + inheritableThreadLocal.get());
+//        System.out.println("main thread end: threadLocal - " + threadLocal.get());
+//
+//        try {
+//            Thread.sleep(1000);
+//        } catch (InterruptedException e) {
+//            throw new RuntimeException(e);
+//        }
 
-        for (int i = 0; i < 1000; i++) {
-            pool2.submit(() -> {
-                System.out.println("hello ");
-                s.add("hello");
-                System.out.println("world ") ;
-            });
+
+        Executor executor = Executors.newFixedThreadPool(2);
+        for (int i = 0; i < 10; i++) {
+            String name = String.valueOf(i);
+            Thread t = new Thread(
+                    () -> {
+                        threadLocal.set("Child %s - threadLocal - ".formatted(name) + Thread.currentThread().getName());
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
+                        System.out.println( Thread.currentThread().getName() + " " + threadLocal.get());
+                    }
+            );
+//            executor.
         }
 
-        pool2.shutdown();
-        System.out.println("last :" + s);
+//        ThreadPoolExecutor pool = new ThreadPoolExecutor(2,
+//                2,
+//                5,
+//                TimeUnit.SECONDS,
+//                new ArrayBlockingQueue<>(10),
+//                Executors.defaultThreadFactory(),
+//                new AbortPolicy()
+//        );
+////        ExecutorService pool2 = Executors.newCachedThreadPool();
+//
+//        for (int i = 0; i < 10; i++) {
+//            Thread t = new Thread(
+//
+//            );
+//            pool.submit(new Runnable() {
+//                @Override
+//                public void run() {
+//                    System.out.println(Thread.currentThread().getName()+ ":" + threadLocal.get());
+//                    threadLocal.set(Thread.currentThread().getName() + " updated");
+//                    System.out.println(Thread.currentThread().getName()+ ":" + threadLocal.get());
+//                }
+//            });
+//        }
+//
+//        pool.shutdown();
 
-//        pool.submit()
-//        pool.execute(work1);
+
     }
 }

@@ -6,6 +6,8 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 
 /**
+ * https://blog.csdn.net/xlinsist/article/details/57089288
+ *
  * /Library/Java/JavaVirtualMachines/jdk-17.jdk/Contents/Home/bin/java -Xms8m -Xmx8m -Xlog:gc -javaagent:/Applications/IntelliJ IDEA CE.app/Contents/lib/idea_rt.jar=60482:/Applications/IntelliJ IDEA CE.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/dzh/IdeaProjects/HomeLake/out/production/zhenhua.code:/Users/dzh/Downloads/junit-4.9.jar:/Users/dzh/Downloads/junit-dep-4.9.jar:/Users/dzh/.m2/repository/org/jetbrains/annotations/20.1.0/annotations-20.1.0.jar com.demo.reference.DemoReference
  * [0.004s][info][gc] Using G1
  * Before memory pressure: Person{age=20, name='tom'}
@@ -38,10 +40,10 @@ import java.util.HashMap;
  */
 public class DemoReference {
     public static void main(String[] args) {
-        Person tom = new Person(20, "tom");
+        Person tom = new Person(20, "Soft");
         SoftReference<Person> softRef = new SoftReference<>(tom);
 
-        Person jerry = new Person(20, "jerry");
+        Person jerry = new Person(20, "Weak");
         WeakReference<Person> weakRef = new WeakReference<>(jerry);
         tom = null;
         jerry = null;
@@ -61,6 +63,11 @@ public class DemoReference {
         for (int i = 0; i < 3; i++) {
             Integer[] arr = new Integer[1000000];
             System.gc();
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
 
             if(softRef.get() != null){
                 System.out.println("In loop gc " + i + softRef.get());

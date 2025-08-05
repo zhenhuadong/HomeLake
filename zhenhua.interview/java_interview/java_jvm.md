@@ -66,12 +66,16 @@ java代码*.java,先通过javac编译出*.class文件，然后JVM的class loader
       - -XX:MaxRAMPercentage=75.0  // JVM堆最大占容器内存的75%
       - -Xss1m   // JVM线程栈大小，例子1M，默认1M
       - -XX:MaxDirectMemorySize=1G   //JVM直接内存（堆外内存）最大大小，例子1G，默认与Xmx（堆）相同
+      - -XX:SoftRefLRUPolicyMSPerMB=50 //每1M空闲内存，允许软引用存活50毫秒
+      - -Xlog:gc
+      - -XX:+PrintGCDetails
       - -XX:+HeapDumpOnOutOfMemoryError   // 内存溢出时生成dump文件
       - -XX:HeapDumpPath=/path/to/heapdump.hprof  // dump文件存储路径，需要在pod上挂载persistent volume
       - -XX:+UseG1GC // JDK9+ 默认配置
       - -XX:G1HeapRegionSize //G1 单个区域的大小（1M到32M之间），总区域有2048个，支持堆2G到64G
       - -XX:MaxGCPauseMillis //设置回收的最大时间
       - -XX:ParallelGCThreads //设置并行垃圾回收线程
+      - https://cloud.tencent.com/developer/article/2410830 G1 垃圾收集器
     - 总内存=堆内存+栈大小*线程数+方法区+本地内存
     - FullGC: 垃圾回收整个堆包括新生代+老年代+永久代（如果有）
     - 回收：强引用（永不回收）> 软引用(内存不足回收) > 弱引用（下次GC回收）> 虚引用（回收时通知）
