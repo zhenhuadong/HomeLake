@@ -26,10 +26,10 @@ public class ClassLoaderDemo {
 		
 		// $JAVA_HOME/jre/lib
 	    System.out.println("bootstrap class path: ");
-		URL[] urls=sun.misc.Launcher.getBootstrapClassPath().getURLs();
-	    for (int i = 0; i < urls.length; i++) {
-	      System.out.println(urls[i]);
-	    }
+//		URL[] urls=sun.misc.Launcher.getBootstrapClassPath().getURLs();
+//	    for (int i = 0; i < urls.length; i++) {
+//	      System.out.println(urls[i]);
+//	    }
 	    
 	    // $JAVA_HOME/lib/ext
 	    System.out.println("extenions class path: " + System.getProperty("java.ext.dirs"));
