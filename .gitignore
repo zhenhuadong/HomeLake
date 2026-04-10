@@ -13,6 +13,7 @@ local.properties
 .recommenders
 
 .idea/
+.venv/
 # Eclipse Core
 .project
 
