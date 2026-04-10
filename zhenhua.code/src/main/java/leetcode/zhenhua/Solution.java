@@ -1,46 +1,71 @@
+package leetcode.zhenhua;
 import java.util.*;
 
 public class Solution {
+    public static int[] commonFootsteps(int fatherPos, int martinPos, int velFather, int steps) {
+        int maxF = 0;
+        int bestV2 = 1;
 
-    public static double areaOfIntersection(int x1, int y1, int r1,
-                                            int x2, int y2, int r2) {
+        // 1. Store all unique father positions in a Set for O(1) lookup
+        Set<Long> fatherPositions = new HashSet<>();
+        long fatherStart = (long) fatherPos;
+        long fatherEnd = fatherStart + ((long) steps * velFather);
 
-        double d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-
-        // No overlap
-        if (d >= r1 + r2) {
-            return 0.0;
+        for (int i = 0; i <= steps; i++) {
+            fatherPositions.add(fatherStart + ((long) i * velFather));
         }
 
-        // One circle completely inside another
-        if (d <= Math.abs(r1 - r2)) {
-            int r = Math.min(r1, r2);
-            return Math.PI * r * r;
+        // 2. Collect all "candidate" velocities.
+        // Martin lands on a father's step if: martinPos + j*V2 = FatherPos
+        // So V2 = (FatherPos - martinPos) / j
+        TreeSet<Integer> candidateVelocities = new TreeSet<>();
+        candidateVelocities.add(1); // Default minimum velocity
+
+        for (long fPos : fatherPositions) {
+            long dist = fPos - martinPos;
+            if (dist <= 0) continue;
+
+            // Martin could reach this position in j steps (1 to steps)
+            for (int j = 1; j <= steps; j++) {
+                if (dist % j == 0) {
+                    candidateVelocities.add((int) (dist / j));
+                }
+            }
         }
 
-        // Partial overlap
-        double alpha = Math.acos((r1*r1 + d*d - r2*r2) / (2 * r1 * d)) * 2;
-        double beta  = Math.acos((r2*r2 + d*d - r1*r1) / (2 * r2 * d)) * 2;
+        // 3. Test each candidate velocity (TreeSet keeps them sorted)
+        for (int v2 : candidateVelocities) {
+            int count = 0;
+            // Martin's run: how many father's steps does he hit?
+            for (int j = 0; ; j++) {
+                long currentMartinPos = (long) martinPos + ((long) j * v2);
+                if (currentMartinPos > fatherEnd) break;
 
-        double area1 = 0.5 * r1 * r1 * (alpha - Math.sin(alpha));
-        double area2 = 0.5 * r2 * r2 * (beta - Math.sin(beta));
+                if (fatherPositions.contains(currentMartinPos)) {
+                    count++;
+                }
+            }
 
-        return area1 + area2;
+            // Update if count is better, or equal (to get the highest V2)
+            if (count >= maxF && count > 0) {
+                maxF = count;
+                bestV2 = v2;
+            }
+        }
+
+        return new int[]{maxF == 0 ? 0 : maxF, bestV2};
     }
 
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
+        if (in.hasNextInt()) {
+            int fPos = in.nextInt();
+            int mPos = in.nextInt();
+            int vF = in.nextInt();
+            int s = in.nextInt();
 
-        int centerX1 = in.nextInt();
-        int centerY1 = in.nextInt();
-        int radius1  = in.nextInt();
-        int centerX2 = in.nextInt();
-        int centerY2 = in.nextInt();
-        int radius2  = in.nextInt();
-
-        double result = areaOfIntersection(centerX1, centerY1, radius1,
-                centerX2, centerY2, radius2);
-
-        System.out.printf("%.6f\n", result);
+            int[] result = commonFootsteps(fPos, mPos, vF, s);
+            System.out.print(result[0] + " " + result[1]);
+        }
     }
 }
