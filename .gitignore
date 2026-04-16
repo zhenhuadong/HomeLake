@@ -12,6 +12,10 @@ local.properties
 .loadpath
 .recommenders
 
+.env
+__pycache__/
+*.pyc
+
 .idea/
 .venv/
 # Eclipse Core

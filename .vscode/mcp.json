@@ -1,0 +1,13 @@
+{
+  "servers": {
+    	"my-mcp": {
+			"type": "stdio",
+			"command": "uv",
+			"cwd": "zhenhua.ai/mcp/python/fastmcp2",
+			"args": [
+				"run",
+				"main.py"
+			]
+		}
+  }
+}
