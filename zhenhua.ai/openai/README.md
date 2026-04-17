@@ -2,9 +2,16 @@
 cd zhenhua.ai/openai 
 source .venv/bin/activate
 pip install -r requirements.txt
-python gemini_demo.py 
-python openai_demo.py
-python aliyun_demo.py
+
+create .env for your api_key, such as
+OPENAI_API_KEY="<your_api_key>"
+GEMINI_API_KEY="<your_api_key>"
+DASHBOARD_API_KEY="<your_api_key>"
+
+python demo_gemini.py 
+python demo_openai.py
+python demo_aliyun.py
+python main.py
 
 unset HTTP_PROXY  HTTPS_PROXY NO_PROXY
 
