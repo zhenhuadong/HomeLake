@@ -13,6 +13,13 @@ python demo_openai.py
 python demo_aliyun.py
 python main.py
 
+
+# openai swagger-ui http://127.0.0.1:8000/docs or http://127.0.0.1:8000/redoc
+python openai_swagger_ui.py
+or
+uvicorn  openai_swagger_ui:app --reload
+
+
 unset HTTP_PROXY  HTTPS_PROXY NO_PROXY
 
 export HTTP_PROXY="http://127.0.0.1:6789"
