@@ -1,0 +1,24 @@
+{
+    "sender": "Alice",
+    "subject_summary": "Q3 项目评审会议及采购清单提交通知",
+    "key_points": [
+        "下周二下午2点的 Q3 项目评审会议",
+        "请在周一中午前提交各自模块的进度报告 PPT",
+        "王总提到预算审批已通过，需要在周五前提交正式的采购清单给财务部",
+        "请大家准时参加会议"
+    ],
+    "action_items": [
+        {
+            "task": "提交各自模块的进度报告 PPT",
+            "deadline": "周一中午前",
+            "owner": "各自模块负责人"
+        },
+        {
+            "task": "提交正式的采购清单给财务部",
+            "deadline": "周五前",
+            "owner": "采购部"
+        }
+    ],
+    "priority": "High",
+    "sentiment": "Urgent"
+}
